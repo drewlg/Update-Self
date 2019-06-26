@@ -43,7 +43,7 @@ class UpdateSkill(MycroftSkill):
         # In this case, respond by simply speaking a canned response.
         # Mycroft will randomly speak one of the lines from the file
         #    dialogs/en-us/hello.world.dialog
-        self.speak('Looking for updates.')
+		self.speak('Looking for updates.')
 		subprocess.call("Msm update good-morning.drewlg")
 		self.speak('Update complete.')
     # The "stop" method defines what Mycroft does when told to stop during
