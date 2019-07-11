@@ -75,17 +75,15 @@ class UpdateSkill(MycroftSkill):
             print('Number of repos: {}\n'.format(repo_num))
 
             for repo in set(repo_list):
-                subprocess.call('msm update ' + repo + '.' + 'drewlg', shell=True)
+                subprocess.call('msm update ' + repo + '.' + user_name, shell=True)
 
-        if __name__ == '__main__':
-            main('drewlg')
+        main('drewlg')
 
 
         self.speak('Update complete.')
         # Wait for 5 seconds
-        self.speak('Rebooting.')
         time.sleep(5)
-
+        self.speak('Rebooting.')
         subprocess.call('sudo reboot', shell=True)
     # The "stop" method defines what Mycroft does when told to stop during
     # the skill's execution. In this case, since the skill's functionality
