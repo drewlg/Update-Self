@@ -11,8 +11,8 @@ from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
 import subprocess
-
-
+import requests as rq
+import time
 
 # Each skill is contained within its own class, which inherits base methods
 # from the MycroftSkill class.  You extend this class as shown below.
@@ -44,8 +44,49 @@ class UpdateSkill(MycroftSkill):
         # Mycroft will randomly speak one of the lines from the file
         #    dialogs/en-us/hello.world.dialog
         self.speak('Looking for updates.')
-        subprocess.call("msm update good-morning.drewlg", shell=True)
+
+        def main(user_name):
+
+            """Simple program that lists USER_NAME Github repositories."""
+
+            num = 0
+            repo_list = list()
+
+            # Loop for pagination: iterate over every page and store repository names
+            while True:
+
+                GitURL = 'https://api.github.com/users/{}/repos?page={}'.format(user_name, num)
+                r = rq.get(GitURL)
+
+                try:
+                    repo_list = repo_list + [dc['name'] for dc in r.json()]
+                except:
+                    # API daily limit exceeded
+                    print('\n', r, '\n', r.json()['message'])
+                    exit()
+                    break
+
+                if len(r.json()) == 0:
+                    break
+
+                num += 1
+
+            repo_num = len(set(repo_list))
+            print('Number of repos: {}\n'.format(repo_num))
+
+            for repo in set(repo_list):
+                subprocess.call('msm update ' + repo + '.' + 'drewlg', shell=True)
+
+        if __name__ == '__main__':
+            main('drewlg')
+
+
         self.speak('Update complete.')
+        # Wait for 5 seconds
+        self.speak('Rebooting.')
+        time.sleep(5)
+
+        subprocess.call('sudo reboot', shell=True)
     # The "stop" method defines what Mycroft does when told to stop during
     # the skill's execution. In this case, since the skill's functionality
     # is extremely simple, there is no need to override it.  If you DO
