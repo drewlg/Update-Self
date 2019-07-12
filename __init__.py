@@ -13,6 +13,7 @@ from mycroft.util.log import LOG
 import subprocess
 import requests as rq
 import time
+import os
 
 # Each skill is contained within its own class, which inherits base methods
 # from the MycroftSkill class.  You extend this class as shown below.
@@ -84,7 +85,7 @@ class UpdateSkill(MycroftSkill):
         # Wait for 5 seconds
         time.sleep(5)
         self.speak('Rebooting.')
-        subprocess.call('sudo reboot', shell=True)
+        os.system('sudo shutdown -r now')
     # The "stop" method defines what Mycroft does when told to stop during
     # the skill's execution. In this case, since the skill's functionality
     # is extremely simple, there is no need to override it.  If you DO
